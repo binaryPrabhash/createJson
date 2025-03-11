@@ -1,0 +1,560 @@
+[
+  {
+    "cardId": "1",
+    "cardName": "patient",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "patient",
+        "columnType": "value",
+        "attributeName": "patient",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "patient"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "2",
+    "cardName": "RACE_repo",
+    "cardType": "bar",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "race repo",
+        "columnType": "value",
+        "attributeName": "RACE_repo",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "RACE_repo"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "3",
+    "cardName": "Grade",
+    "cardType": "bar",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Grade",
+        "columnType": "value",
+        "attributeName": "Grade",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Grade"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "4",
+    "cardName": "Mitosis",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Mitosis",
+        "columnType": "value",
+        "attributeName": "Mitosis",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Mitosis"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "5",
+    "cardName": "Tumor Size",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Tumor Size",
+        "columnType": "value",
+        "attributeName": "tumor_size",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "tumor_size"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "6",
+    "cardName": "HER2Calc",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "clinical_event",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Active Report Data",
+        "columnType": "value",
+        "attributeName": "activeReportData",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Clinical_event",
+        "columnType": "aggregate",
+        "attributeName": [
+          "activeReportData"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "7",
+    "cardName": "Necrosis",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Necrosis",
+        "columnType": "value",
+        "attributeName": "Necrosis",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Necrosis"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "8",
+    "cardName": "Ethnicity",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Ethnicity",
+        "columnType": "value",
+        "attributeName": "Ethnicity",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Ethnicity"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "9",
+    "cardName": "Pleomorph",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Pleomorph",
+        "columnType": "value",
+        "attributeName": "Pleomorph",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Pleomorph"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "10",
+    "cardName": "Slide",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Slide",
+        "columnType": "value",
+        "attributeName": "slide",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "slide"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "11",
+    "cardName": "Subject Id",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Subject Id",
+        "columnType": "value",
+        "attributeName": "Subject Id",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Subject",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Subject Id"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "12",
+    "cardName": "Sample Receipt Timestamp",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "case_sample",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "SRT",
+        "columnType": "value",
+        "attributeName": "Sample Receipt Timestamp",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Case_Sample",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Sample Receipt Timestamp"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "13",
+    "cardName": "Subject Id",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "storage",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Subject Id",
+        "columnType": "value",
+        "attributeName": "Subject Id",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Storage",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Subject Id"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "14",
+    "cardName": "Perform Test",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "accession",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Perform Test",
+        "columnType": "value",
+        "attributeName": "Perform Test",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Accession",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Perform Test"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "15",
+    "cardName": "DNA Isolation Done",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "case_sample",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "DNA Isolation Done",
+        "columnType": "value",
+        "attributeName": "DNA Isolation Done",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Case_Sample",
+        "columnType": "aggregate",
+        "attributeName": [
+          "DNA Isolation Done"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "16",
+    "cardName": "Accession Assay Card",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "accession",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Accession_assay_card",
+        "columnType": "value",
+        "attributeName": "Accession_assay_card",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Accession",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Accession_assay_card"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "17",
+    "cardName": "Accession Document Id",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "accession",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Accession_document_id",
+        "columnType": "value",
+        "attributeName": "Accession_document_id",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Accession",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Accession_document_id"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "18",
+    "cardName": "Store Sample",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "accession",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "Store Sample",
+        "columnType": "value",
+        "attributeName": "Store Sample",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "#Accession",
+        "columnType": "aggregate",
+        "attributeName": [
+          "Store Sample"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  }
+]

@@ -1,6 +1,5 @@
 <script>
 	import { slide } from "svelte/transition";
-	import cardData from "./cards.json";
 	import cardTemplate from "./cardTemplate.json";
 	import columnTemplate from "./columnTemplate.json";
 
@@ -14,11 +13,10 @@
 	};
 
 	let cards = $state([]);
-  	cards = cardData;
 	let numOfCards = $derived(cards.length);
 	let selectedCard = $state(null);
-	let columnDetails = $state([]);
-  	let newColumnDetails = $state(null);
+	let columnsList = $state([]);
+  	let newColumnObj = $state({...columnTemplate});
 
 	function handleBannerStatusClick() {
 		bannerStatus = !bannerStatus;
@@ -32,45 +30,66 @@
 	}
 
   	function showCardDetails(card) {
-    	newColumnDetails = columnTemplate;
+    	newColumnObj = {...columnTemplate};
 		selectedCard = card;
-		columnDetails = card.columnDetails;
+		columnsList = card.columnDetails;
 	}
 
 	function addCard() {
-    	newColumnDetails = columnTemplate;
+    	newColumnObj = {...columnTemplate};
 		cardTemplate.cardId = String(cards.length + 1);
-		selectedCard = cardTemplate;
-    	columnDetails = [];
+		selectedCard = {...cardTemplate};
+    	columnsList = [];
 	}
 
 	function updateCard(cardId) {
-		if (newColumnDetails.columnName && newColumnDetails.attributeName) {
-		newColumnDetails.id = columnDetails.length + 1;
-		columnDetails.push(newColumnDetails);
+		if (newColumnObj.columnName && newColumnObj.attributeName) {
+			newColumnObj.id = columnsList.length + 1;
+			columnsList.push({...newColumnObj});
 		}
 
-		selectedCard.columnDetails = columnDetails;
+		selectedCard.columnDetails = columnsList;
 		if (cardId === cards.length + 1) {
 			cards.push(selectedCard);
 		} else {
 			cards[cardId - 1] = selectedCard;
 		}
-    	newColumnDetails = columnTemplate;
+    	newColumnObj = {...columnTemplate};
 	}
 
 	function deleteCard() {
 		const input = confirm("Do you really want to delete this card?");
 		if (input) {
-			cards.splice(selectedCard.cardId - 1, 1);
-			selectedCard = null;
+			let idx = cards.find(item => item.cardId === selectedCard.cardId);
+			if (idx) {
+				cards.splice(idx, 1);
+				selectedCard = null;
+			}
+		}
+	}
+
+	function deleteColumn(id) {
+		const index = columnsList.find(item => item.id === id);
+		let columnId = index.id;
+		if (index) {
+			columnsList.splice(columnId - 1, 1);
+			if (columnsList.length >= columnId) {
+				columnsList.map(item => {
+					if (item.id > columnId) {
+						item.id = columnId;
+						columnId++;
+					}
+					return item;
+				})
+			}
+			selectedCard.columnDetails = columnsList;
 		}
 	}
 
 	function handleSelectAggregateOn(column) {
 		if (column.aggregateOn === 'valueColumns') {
 			let ValueColumns = [];
-			columnDetails.map((columnItem) => {
+			columnsList.map((columnItem) => {
 				if (columnItem.columnType === "value") {
 					ValueColumns.push(columnItem.attributeName);
 				}
@@ -101,6 +120,9 @@
             const text = await file.text();
 
 			cards = JSON.parse(text);
+			selectedCard = cards.length > 0 ? cards[0] : null;
+			columnsList = selectedCard?.columnDetails || [];
+			newColumnObj = {...columnTemplate};
         } catch (err) {
             console.error("Error reading file:", err);
         }
@@ -150,7 +172,7 @@
 				<span style="font-weight: bold;">Attributes: 0</span>
 			</div>
 			<div style="flex: 1; display:flex; justify-content: space-around;">
-				<span style="background-color: #00adb5; font-weight: bold;">Columns: {columnDetails.length}</span>
+				<span style="background-color: #00adb5; font-weight: bold;">Columns: {columnsList.length}</span>
 				<span style="background-color: #00adb5; font-weight: bold;">Aggregations: 0</span>
 			</div>
 		</div>
@@ -169,11 +191,12 @@
 						<tr>
 							<th>Sr No.</th>
 							<th>Card Name</th>
+							<th>Card Entity</th>
 							<th>Columns</th>
 						</tr>
 					</thead>
 					<tbody>
-						{#each cards as card, index}
+						{#each cards as card}
 							<tr
 								onclick={() => showCardDetails(card)}
 								style={card.cardId === selectedCard?.cardId
@@ -182,7 +205,8 @@
 							>
 								<td>{card.cardId}</td>
 								<td>{card.cardName}</td>
-								<td style="text-align: center;">{card.columnDetails.length}</td>
+								<td>{card.entity}</td>
+								<td>{card.columnDetails.map(item => item.columnName).join(", ")}</td>
 							</tr>
 						{/each}
 					</tbody>
@@ -243,11 +267,12 @@
 							<input type="text" readonly bind:value={selectedCard.y} />
 						</div>
 
-						{#each selectedCard.columnDetails as column, i}
-							<div style="display: flex; flex-direction:column">
+						{#each selectedCard.columnDetails as column}
+							<div style="display: flex; flex-direction:column; position: relative;">
 								<div style="background-color: azure; color: black; margin:4px 0px">
 									Column {column.id}
 								</div>
+								<button class="cross-button" onclick={() => {deleteColumn(column.id)}}>x</button>
 								<div>
 									<div style="display: flex; justify-content:space-between;">
 										<span>Column Name:</span>
@@ -307,30 +332,30 @@
 							</div>
 						{/each}
 
-						<div style="display: flex; flex-direction:column">
+						<div style="display: flex; flex-direction:column;">
 							<div style="background-color: azure; color: black; margin: 4px 0px;">
 								Add New Column
 							</div>
 							<div>
 								<div style="display: flex; justify-content:space-between;">
 									<span>Column Name:</span>
-									<input type="text" bind:value={newColumnDetails.columnName} />
+									<input type="text" bind:value={newColumnObj.columnName} />
 								</div>
 
 								<div style="display: flex; justify-content:space-between;">
 									<span>Column Type:</span>
 									<select 
-										bind:value={newColumnDetails.columnType}
-										onchange={() => handleSelectColumnType(newColumnDetails)}>
+										bind:value={newColumnObj.columnType}
+										onchange={() => handleSelectColumnType(newColumnObj)}>
 										<option selected value="value">value</option>
 										<option value="aggregate">aggregate</option>
 									</select>
 								</div>
 
-								{#if newColumnDetails.columnType === "aggregate"}
+								{#if newColumnObj.columnType === "aggregate"}
 									<div style="display: flex; justify-content:space-between;">
 										<span>Aggregate Type:</span>
-										<select bind:value={newColumnDetails.aggregateType}>
+										<select bind:value={newColumnObj.aggregateType}>
 											<option selected value="count">COUNT</option>
 											<option value="countComplement">COUNT Complement</option>
 											<option value="sum">SUM</option>
@@ -347,8 +372,8 @@
 									<div style="display: flex; justify-content:space-between;">
 										<span>Aggregate On:</span>
 										<select
-											bind:value={newColumnDetails.aggregateOn}
-											onchange={() => handleSelectAggregateOn(newColumnDetails)}
+											bind:value={newColumnObj.aggregateOn}
+											onchange={() => handleSelectAggregateOn(newColumnObj)}
 										>
 											<option value="valueColumns">Value Columns</option>
 											<option value="selectAttribute">Select Attribute</option>
@@ -360,8 +385,8 @@
 									<span>Attribute Name:</span>
 									<input
 										type="text"
-										readonly={newColumnDetails.aggregateOn === "valueColumns"}
-										bind:value={newColumnDetails.attributeName}
+										readonly={newColumnObj.aggregateOn === "valueColumns"}
+										bind:value={newColumnObj.attributeName}
 									/>
 								</div>
 							</div>
@@ -377,7 +402,7 @@
 								<div style="display:flex; justify-content:center; background-color:black;">{selectedCard.cardName}</div>
 								<div style="display: flex;">
 									{#each selectedCard.columnDetails as column}
-										<span style="flex:1; color:black; padding:4px;">{column.columnName}</span>
+										<span style="flex: 1; padding: 4px; color: {column.columnType === 'value' ? '#0074D9' : '#2ECC40'}; text-align:center;">{column.columnName}</span>
 									{/each}
 								</div>
 								<div style="height: 100px; color:black; display:flex; justify-content:center; align-items:center;">Data</div>
@@ -400,7 +425,23 @@
 		</div>
 	</div>
 
-	<div class="bottom" style="height: {sectionHeights.bottom};"></div>
+	<div class="bottom" style="height: {sectionHeights.bottom};">
+		<div></div>
+		<div>
+			{#if selectedCard?.columnDetails?.length > 0}
+				<div class="column-legend">
+					<div>
+						<span style="background-color: #0074D9;"></span>
+						<p>Value Column</p>
+					</div>
+					<div>
+						<span style="background-color: #2ECC40;"></span>
+						<p>Aggregate Column</p>
+					</div>
+				</div>
+			{/if}
+		</div>
+	</div>
 </main>
 
 <style>
@@ -409,13 +450,13 @@
 		display: flex;
 		flex-direction: column;
 		box-sizing: border-box;
-		overflow: hidden; /* Ensure no scrolling */
+		overflow: hidden;
 	}
 
 	.top,
 	.bottom {
 		background-color: #eeeeee;
-		flex: 0 0 10vh; /* Fixed height */
+		flex: 0 0 5vh;
 	}
 
 	.top {
@@ -434,27 +475,24 @@
 	}
 
 	.content {
-		flex: 1; /* Takes remaining space */
+		flex: 1;
 		display: grid;
 		grid-template-columns: 50% 50%;
 		gap: 1rem;
 		box-sizing: border-box;
-		overflow: hidden; /* Prevents scrolling */
+		overflow: hidden;
 		padding: 1rem;
 		width: 100%;
-		height: auto; /* Auto-fit remaining space */
 	}
 
 	.column {
-		/* background-color: #EEEEEE; */
 		border-radius: 0.5rem;
 		display: flex;
 		justify-content: center;
 		font-weight: bold;
-		min-width: 0; /* Prevent content overflow */
+		min-width: 0;
 		min-height: 0;
 		margin-top: 2rem;
-		padding: 1rem;
 	}
 
 	.column-2 {
@@ -463,7 +501,7 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
-		height: 88%;
+		padding: 1rem;
 	}
 
 	.table-container {
@@ -580,5 +618,54 @@
 		color: #555;
 		border-color: #ddd;
 		cursor: not-allowed;
+	}
+
+	.cross-button {
+		padding:0;
+		margin:0;
+		width: 3rem;
+		height: 26px;
+		position: absolute;
+		right: 0px;
+		top: 2px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 0;
+	}
+
+	.bottom {
+		display: flex;
+	}
+
+	.bottom > div {
+		flex: 1;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.column-legend {
+		width: 25%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.column-legend > div {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.column-legend > div > span {
+		width: 10px;
+		height: 10px;
+		margin: 4px;
+	}
+
+	.column-legend > div > p {
+		color: black;
+		font-weight: 600;
 	}
 </style>
