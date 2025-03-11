@@ -1,0 +1,73 @@
+[
+  {
+    "cardId": "1",
+    "cardName": "card 1",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "gender",
+        "columnType": "value",
+        "attributeName": "gender",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "smoking status",
+        "columnType": "value",
+        "attributeName": "smoking_status",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 3,
+        "columnName": "count",
+        "columnType": "aggregate",
+        "attributeName": [
+          "gender",
+          "smoking status"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  },
+  {
+    "cardId": "2",
+    "cardName": "card 2",
+    "cardType": "table",
+    "dataType": "text",
+    "entity": "subject",
+    "height": 2,
+    "width": 3,
+    "x": 0,
+    "y": 0,
+    "columnDetails": [
+      {
+        "id": 1,
+        "columnName": "gender",
+        "columnType": "value",
+        "attributeName": "gender",
+        "aggregateType": "",
+        "aggregateOn": ""
+      },
+      {
+        "id": 2,
+        "columnName": "count",
+        "columnType": "aggregate",
+        "attributeName": [
+          "gender"
+        ],
+        "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      }
+    ]
+  }
+]
