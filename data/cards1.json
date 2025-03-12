@@ -28,13 +28,24 @@
       },
       {
         "id": 3,
-        "columnName": "count",
+        "columnName": "+ve",
         "columnType": "aggregate",
         "attributeName": [
           "gender",
           "smoking status"
         ],
         "aggregateType": "count",
+        "aggregateOn": "valueColumns"
+      },
+      {
+        "id": 4,
+        "columnName": "-ve",
+        "columnType": "aggregate",
+        "attributeName": [
+          "gender",
+          "smoking_status"
+        ],
+        "aggregateType": "countComplement",
         "aggregateOn": "valueColumns"
       }
     ]
