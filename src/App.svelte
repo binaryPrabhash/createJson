@@ -18,6 +18,10 @@
 	let columnsList = $state([]);
   	let newColumnObj = $state({...columnTemplate});
 
+	const addCardButtonEnabled = $derived(cards.length >= selectedCard.cardId);
+	const deleteCardButtonEnabled = $derived(cards.length >= selectedCard.cardId);
+	const saveButtonEnabled = $derived(selectedCard && selectedCard.cardName && selectedCard.entity && selectedCard.cardType);
+
 	function handleBannerStatusClick() {
 		bannerStatus = !bannerStatus;
 		if (bannerStatus) {
@@ -218,10 +222,9 @@
 				<div style="display: flex; justify-content:space-between;">
 					<h2>Card Details</h2>
 					<div class="buttons">
-						<button onclick={addCard}>New Card</button>
-						<button onclick={() => updateCard(selectedCard.cardId)}>Save</button
-						>
-						<button class="delete-btn" onclick={deleteCard}>Delete</button>
+						<button onclick={addCard} disabled={!addCardButtonEnabled}>Add Card</button>
+						<button onclick={() => updateCard(selectedCard.cardId)} disabled={!saveButtonEnabled}>Save</button>
+						<button class="delete-btn" onclick={deleteCard} disabled={!deleteCardButtonEnabled}>Delete</button>
 					</div>
 				</div>
 
@@ -414,12 +417,12 @@
 				</div>
 			{:else}
 				<div style="display: flex; justify-content:flex-end">
-					<button onclick={addCard}>New Card</button>
+					<button onclick={addCard}>Add Card</button>
 				</div>
 				<div
 					style="display: flex; justify-content:center; align-items:center; height:100%"
 				>
-					<p>Select a row to see details.</p>
+					<p>Click on Add Card Button to start adding cards.</p>
 				</div>
 			{/if}
 		</div>
@@ -645,7 +648,7 @@
 	}
 
 	.column-legend {
-		width: 25%;
+		width: 50%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
