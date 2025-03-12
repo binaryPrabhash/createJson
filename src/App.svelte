@@ -14,12 +14,12 @@
 
 	let cards = $state([]);
 	let numOfCards = $derived(cards.length);
-	let selectedCard = $state(null);
+	let selectedCard = $state({...cardTemplate});
 	let columnsList = $state([]);
   	let newColumnObj = $state({...columnTemplate});
 
-	const addCardButtonEnabled = $derived(cards.length >= selectedCard.cardId);
-	const deleteCardButtonEnabled = $derived(cards.length >= selectedCard.cardId);
+	const addCardButtonEnabled = $derived(cards.length >= (selectedCard.cardId ? Number(selectedCard.cardId) : 0));
+	const deleteCardButtonEnabled = $derived(cards.length >= Number(selectedCard.cardId));
 	const saveButtonEnabled = $derived(selectedCard && selectedCard.cardName && selectedCard.entity && selectedCard.cardType);
 
 	function handleBannerStatusClick() {
@@ -34,40 +34,44 @@
 	}
 
   	function showCardDetails(card) {
-    	newColumnObj = {...columnTemplate};
-		selectedCard = card;
-		columnsList = card.columnDetails;
+    	Object.assign(newColumnObj, JSON.parse(JSON.stringify(columnTemplate)));
+		Object.assign(selectedCard, JSON.parse(JSON.stringify(card)));
+		columnsList.length = 0;
+		columnsList.push(...card.columnDetails);
 	}
 
 	function addCard() {
-    	newColumnObj = {...columnTemplate};
-		cardTemplate.cardId = String(cards.length + 1);
-		selectedCard = {...cardTemplate};
-    	columnsList = [];
+    	Object.assign(newColumnObj, {...columnTemplate});
+		Object.assign(selectedCard, JSON.parse(JSON.stringify(cardTemplate)));
+		selectedCard.cardId = String(cards.length + 1);
+    	columnsList.length = 0;
 	}
 
 	function updateCard(cardId) {
 		if (newColumnObj.columnName && newColumnObj.attributeName) {
 			newColumnObj.id = columnsList.length + 1;
-			columnsList.push({...newColumnObj});
+			columnsList.push({ ...newColumnObj });
 		}
 
-		selectedCard.columnDetails = columnsList;
+    	selectedCard.columnDetails = [...columnsList];
 		if (cardId === cards.length + 1) {
-			cards.push(selectedCard);
+			cards.push({ ...selectedCard });
+		} else if (cardId > 0 && cardId <= cards.length) {
+			Object.assign(cards[cardId - 1], selectedCard);
 		} else {
-			cards[cardId - 1] = selectedCard;
+			console.error("Invalid cardId:", cardId);
 		}
-    	newColumnObj = {...columnTemplate};
+
+		Object.assign(newColumnObj, columnTemplate);
 	}
 
 	function deleteCard() {
 		const input = confirm("Do you really want to delete this card?");
 		if (input) {
-			let idx = cards.find(item => item.cardId === selectedCard.cardId);
+			let idx = cards.findIndex(item => item.cardId === selectedCard.cardId);
 			if (idx) {
 				cards.splice(idx, 1);
-				selectedCard = null;
+				Object.assign(selectedCard, cardTemplate);
 			}
 		}
 	}
@@ -123,9 +127,18 @@
             const file = await fileHandle.getFile();
             const text = await file.text();
 
-			cards = JSON.parse(text);
-			selectedCard = cards.length > 0 ? cards[0] : null;
-			columnsList = selectedCard?.columnDetails || [];
+			cards.length = 0;
+			cards.push(...JSON.parse(text));
+
+			if (cards.length > 0) {
+				Object.assign(selectedCard, JSON.parse(JSON.stringify(cards[0])));
+			} else {
+				Object.assign(selectedCard, JSON.parse(JSON.stringify(cardTemplate)));
+			}
+			if (selectedCard.columnDetails) {
+				columnsList.length = 0;
+				columnsList.push(...selectedCard.columnDetails);	
+			}
 			newColumnObj = {...columnTemplate};
         } catch (err) {
             console.error("Error reading file:", err);
@@ -151,7 +164,7 @@
 
 <main>
 	<div class="top" style="height: {sectionHeights.top};">
-		<span class="heading">Cards</span>
+		<h2 class="heading">Cards</h2>
 		<ul>
 			<li><button>Home</button></li>
 			<li><button onclick={openFile}>Open</button></li>
@@ -218,54 +231,54 @@
 			</div>
 		</div>
 		<div class="column column-2">
-			{#if selectedCard}
+			{#if selectedCard.cardId}
 				<div style="display: flex; justify-content:space-between;">
 					<h2>Card Details</h2>
 					<div class="buttons">
 						<button onclick={addCard} disabled={!addCardButtonEnabled}>Add Card</button>
-						<button onclick={() => updateCard(selectedCard.cardId)} disabled={!saveButtonEnabled}>Save</button>
+						<button onclick={() => updateCard(Number(selectedCard.cardId))} disabled={!saveButtonEnabled}>Save</button>
 						<button class="delete-btn" onclick={deleteCard} disabled={!deleteCardButtonEnabled}>Delete</button>
 					</div>
 				</div>
 
-				<div style="display: flex; gap: 1rem; overflow:auto;">
-					<div style="flex:1;">
-						<div style="display: flex; justify-content:space-between;">
+				<div style="display: flex; gap: 1rem; flex: 1; overflow:hidden;">
+					<div class="card-details">
+						<div>
 							<span>Card Id:</span>
 							<input type="text" readonly bind:value={selectedCard.cardId} />
 						</div>
 
-						<div style="display: flex; justify-content:space-between;">
+						<div>
 							<span>Card Name:</span>
 							<input type="text" bind:value={selectedCard.cardName} />
 						</div>
 
-						<div style="display: flex; justify-content:space-between;">
+						<div>
 							<span>Card Type:</span>
 							<input type="text" bind:value={selectedCard.cardType} />
 						</div>
 
-						<div style="display: flex; justify-content:space-between;">
+						<div>
 							<span>Entity:</span>
 							<input type="text" bind:value={selectedCard.entity} />
 						</div>
 
-						<div style="display: flex; justify-content:space-between;">
+						<div>
 							<span>Height:</span>
 							<input type="text" readonly bind:value={selectedCard.height} />
 						</div>
 
-						<div style="display: flex; justify-content:space-between;">
+						<div>
 							<span>Width:</span>
 							<input type="text" readonly bind:value={selectedCard.width} />
 						</div>
 
-						<div style="display: flex; justify-content:space-between;">
+						<div>
 							<span>x:</span>
 							<input type="text" readonly bind:value={selectedCard.x} />
 						</div>
 
-						<div style="display: flex; justify-content:space-between;">
+						<div>
 							<span>y:</span>
 							<input type="text" readonly bind:value={selectedCard.y} />
 						</div>
@@ -276,13 +289,13 @@
 									Column {column.id}
 								</div>
 								<button class="cross-button" onclick={() => {deleteColumn(column.id)}}>x</button>
-								<div>
-									<div style="display: flex; justify-content:space-between;">
+								<div class="column-info">
+									<div>
 										<span>Column Name:</span>
 										<input type="text" bind:value={column.columnName} />
 									</div>
 
-									<div style="display: flex; justify-content:space-between;">
+									<div>
 										<span>Column Type:</span>
 										<select 
 											bind:value={column.columnType}
@@ -293,7 +306,7 @@
 									</div>
 
 									{#if column.columnType === "aggregate"}
-										<div style="display: flex; justify-content:space-between;">
+										<div>
 											<span>Aggregate Type:</span>
 											<select bind:value={column.aggregateType}>
 												<option selected value="count">COUNT</option>
@@ -310,7 +323,7 @@
 											</select>
 										</div>
 
-										<div style="display: flex; justify-content:space-between;">
+										<div>
 											<span>Aggregate On:</span>
 											<select
 												bind:value={column.aggregateOn}
@@ -323,7 +336,7 @@
 										</div>
 									{/if}
 
-									<div style="display: flex; justify-content:space-between;">
+									<div>
 										<span>Attribute Name:</span>
 										<input
 											type="text"
@@ -339,13 +352,13 @@
 							<div style="background-color: azure; color: black; margin: 4px 0px;">
 								Add New Column
 							</div>
-							<div>
-								<div style="display: flex; justify-content:space-between;">
+							<div class="column-info">
+								<div>
 									<span>Column Name:</span>
 									<input type="text" bind:value={newColumnObj.columnName} />
 								</div>
 
-								<div style="display: flex; justify-content:space-between;">
+								<div>
 									<span>Column Type:</span>
 									<select 
 										bind:value={newColumnObj.columnType}
@@ -356,7 +369,7 @@
 								</div>
 
 								{#if newColumnObj.columnType === "aggregate"}
-									<div style="display: flex; justify-content:space-between;">
+									<div>
 										<span>Aggregate Type:</span>
 										<select bind:value={newColumnObj.aggregateType}>
 											<option selected value="count">COUNT</option>
@@ -372,7 +385,7 @@
 										</select>
 									</div>
 
-									<div style="display: flex; justify-content:space-between;">
+									<div>
 										<span>Aggregate On:</span>
 										<select
 											bind:value={newColumnObj.aggregateOn}
@@ -384,7 +397,7 @@
 									</div>
 								{/if}
 
-								<div style="display: flex; justify-content:space-between;">
+								<div>
 									<span>Attribute Name:</span>
 									<input
 										type="text"
@@ -395,13 +408,9 @@
 							</div>
 						</div>
 					</div>
-					<div
-						style="flex:1; display:flex; justify-content:center; align-items:center;"
-					>
+					<div class="card-preview">
 						{#if selectedCard?.columnDetails?.length > 0}
-							<div
-								style="display: flex; flex-direction: column; width:400px; background-color: white; border: 1px solid grey;"
-							>
+							<div>
 								<div style="display:flex; justify-content:center; background-color:black;">{selectedCard.cardName}</div>
 								<div style="display: flex;">
 									{#each selectedCard.columnDetails as column}
@@ -469,12 +478,39 @@
 		box-sizing: border-box;
 	}
 
+	ul {
+		list-style: none;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0;
+		margin: 0;
+	}
+
+	li {
+		color: black;
+	}
+
 	.banner {
 		background-color: #393e46;
 		display: flex;
 		justify-content: space-around;
 		transition: all 1s ease;
 		flex: 0 0 15vh; /* Fixed height */
+	}
+
+	.banner > div > span {
+		width: 20%;
+		min-height: 8vh;
+		height: 50%;
+		align-self: center;
+		/* background-color: #00adb5; */
+		background-color: #222831;
+		border-radius: 0.5rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-bottom: 2px solid white;
 	}
 
 	.content {
@@ -557,36 +593,40 @@
 		cursor: pointer;
 	}
 
-	ul {
-		list-style: none;
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0;
-		margin: 0;
+	.card-details {
+		flex:1;
+		max-height: 100%;
+		overflow:auto;
 	}
 
-	li {
-		color: black;
+	.card-details > div {
+		display: flex;
+		justify-content:space-between;
+		padding-right: 0.5rem;
 	}
 
-	.banner > div > span {
-		width: 20%;
-		min-height: 8vh;
-		height: 50%;
-		align-self: center;
-		/* background-color: #00adb5; */
-		background-color: #222831;
-		border-radius: 0.5rem;
+	.column-info > div {
 		display: flex;
-		justify-content: center;
-		align-items: center;
-		border-bottom: 2px solid white;
+		justify-content:space-between;
+	}
+
+	.card-preview {
+		flex:1;
+		display:flex;
+		justify-content:center;
+		align-items:center;
+	}
+
+	.card-preview > div {
+		display: flex;
+		flex-direction: column;
+		width:400px;
+		background-color: white;
+		border: 1px solid grey;
 	}
 
 	.heading {
 		font-size: 2rem;
-		font-weight: 700;
 		display: flex;
 		align-items: center;
 		color: black;
@@ -595,11 +635,11 @@
   	input, select {
 		width: 40%;
 		height: 2rem;
-		padding: 4px 6px;
-		margin-bottom: 4px;
+		padding: 0.25rem 0.5rem;
+		margin-bottom: 0.25rem;
 		font-size: 1rem;
 		border: 2px solid #ccc;
-		border-radius: 6px;
+		border-radius: 0.25rem;
 		outline: none;
 		background-color: white;
 		color: black;
@@ -624,13 +664,11 @@
 	}
 
 	.cross-button {
-		padding:0;
-		margin:0;
 		width: 3rem;
-		height: 26px;
+		height: 1.625rem;
 		position: absolute;
-		right: 0px;
-		top: 2px;
+		right: 0.5rem;
+		top: 0.125rem;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -662,13 +700,35 @@
 	}
 
 	.column-legend > div > span {
-		width: 10px;
-		height: 10px;
-		margin: 4px;
+		width: 0.75rem;
+		height: 0.75rem;
+		margin: 0.25rem;
 	}
 
 	.column-legend > div > p {
 		color: black;
 		font-weight: 600;
+	}
+
+	/* Scrollbar Track */
+	::-webkit-scrollbar {
+		width: 8px; /* Adjust scrollbar width */
+	}
+
+	/* Scrollbar Thumb */
+	::-webkit-scrollbar-thumb {
+		background: rgba(255, 255, 255, 0.6); /* Light semi-transparent white */
+		border-radius: 10px;
+	}
+
+	/* Scrollbar Track when hovered */
+	::-webkit-scrollbar-thumb:hover {
+		background: rgba(255, 255, 255, 0.8); /* Slightly darker on hover */
+	}
+
+	/* Scrollbar Background */
+	::-webkit-scrollbar-track {
+		background: rgba(0, 0, 0, 0.2); /* Darker background for contrast */
+		border-radius: 10px;
 	}
 </style>
